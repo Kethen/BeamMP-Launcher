@@ -579,7 +579,12 @@ void NewSyncResources(SOCKET Sock, const std::string& Mods, const std::vector<Mo
             }
 #endif
 
-            fs::copy_file(PathToSaveTo, std::filesystem::path(GetGamePath()) / "mods/multiplayer" / FName, fs::copy_options::overwrite_existing);
+            auto name = std::filesystem::path(GetGamePath()) / "mods/multiplayer" / FName;
+            auto tmp_name = name;
+            tmp_name += ".tmp";
+
+            fs::copy_file(PathToSaveTo, tmp_name, fs::copy_options::overwrite_existing);
+            fs::rename(tmp_name, name);
             UpdateModUsage(FName);
         }
         WaitForConfirm();
@@ -738,7 +743,12 @@ void SyncResources(SOCKET Sock) {
             }
 #endif
 
-            fs::copy_file(PathToSaveTo, GetGamePath() / beammp_wide("mods/multiplayer") / Utils::ToWString(FName), fs::copy_options::overwrite_existing);
+            auto name = GetGamePath() / beammp_wide("mods/multiplayer") / Utils::ToWString(FName);
+            auto tmp_name = name;
+            tmp_name += L".tmp";
+
+            fs::copy_file(PathToSaveTo, tmp_name, fs::copy_options::overwrite_existing);
+            fs::rename(tmp_name, name);
             UpdateModUsage(FN->substr(pos));
         }
         WaitForConfirm();
